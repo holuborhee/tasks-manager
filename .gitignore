@@ -1,0 +1,30 @@
+# Python and Django specific files
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.egg-info/
+
+# Django specific files
+db.sqlite3
+media/
+
+# Virtual environment files
+venv/
+env/
+*.env
+
+# IDE and editor files
+.vscode/
+.pycharm/
+.idea/
+*.iml
+
+# OS and system files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Log files
+*.log
