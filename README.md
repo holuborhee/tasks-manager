@@ -4,15 +4,16 @@ Create and Manage your tasks.
 
 ## Features
 
-* [x] CRUD for tasks on the backend
-* [x] Add, Edit, and Delete using AJAX on the frontend
-* [x] Fetch and Display with Jquery and Tailwind on the Client Side
-* [x] Search by task title
-* [x] Filter by Assigned User
-* [x] Sort by priority
-* [ ] drag-and-drop functionality to change the status of tasks
-* [ ] User Authentication and Authorization
-* [ ] Validation on Client Side and Server side
+- [x] CRUD for tasks on the backend
+- [x] Add, Edit, and Delete using AJAX on the frontend
+- [x] Fetch and Display with Jquery and Tailwind on the Client Side
+- [x] Search by task title
+- [x] Filter by Assigned User
+- [x] Sort by priority
+- [x] Validation on Client Side
+- [ ] Validation on Server side **(Done for some routes)**
+- [ ] drag-and-drop functionality to change the status of tasks
+- [ ] User Authentication and Authorization
 
 ## Prerequisites
 
@@ -42,9 +43,9 @@ Before you can run this project, you need to make sure you have the following so
 
 4. Install the required Python packages using the following command: `pip install -r requirements.txt`
 
-6. Apply the database migrations using the following command: `python manage.py migrate`
+5. Apply the database migrations using the following command: `python manage.py migrate`
 
-7. Create a superuser account using the following command: `python manage.py createsuperuser`
+6. Create a superuser account using the following command: `python manage.py createsuperuser`
 
 Follow the prompts to enter your desired username, email address, and password.
 
