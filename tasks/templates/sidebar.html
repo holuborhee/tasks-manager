@@ -1,14 +1,20 @@
-<aside class="bg-white w-64 min-h-screen p-4 shadow-md">
-    {% load static %}
-        <img src="{% static 'images/logo.png' %}" alt="Tasky Logo" class="h-8" />
-    <nav>
-        <ul>
-            <li class="mb-4"><a href="{% url 'home' %}" class="text-blue-500">Dashboard</a></li>
-            <li class="mb-4"><a href="#">Tasks</a></li>
-            <li class="mb-4"><a href="#">Calendar</a></li>
-            <li class="mb-4"><a href="#">Members</a></li>
-        </ul>
-    </nav>
+<aside class="bg-white w-64 min-h-screen p-4 pr-0 shadow-md flex flex-col justify-between">
+    <div>
+        <span class="flex items-center mb-5">
+            {% load static %}
+            <img src="{% static 'images/logo.png' %}" alt="Tasky Logo" class="h-8" />
+            <h2 class="text-[#1e40af] text-4xl">Tasky</h2>
+        </span>
+        <nav>
+            <ul>
+                <li class="bg-[#1e40af] py-3 px-5 rounded-l-lg"><a href="{% url 'home' %}" class="text-white">Dashboard</a></li>
+                <li class="py-4 px-5"><a href="#">Tasks</a></li>
+                <li class="py-4 px-5"><a href="#">Calendar</a></li>
+                <li class="py-4 px-5"><a href="#">Members</a></li>
+            </ul>
+        </nav>
+    </div>
+    
     <div class="mt-8">
         <button class="bg-blue-500 text-white p-2 rounded">Upgrade to Pro</button>
     </div>
