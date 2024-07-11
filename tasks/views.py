@@ -66,7 +66,28 @@ def get_tasks_by_status(request, status):
     if status not in status_map:
         return JsonResponse({'error': 'Invalid status'}, status=400)
     
+    # Fetch query parameters
+    assigned_to = request.GET.get('assigned_to')
+    sort_priority = request.GET.get('sort_priority')
+    search_title = request.GET.get('search_title')
+    
     tasks = Task.objects.filter(status=status_map[status])
+
+    # Filter by assigned_to if provided
+    if assigned_to:
+        tasks = tasks.filter(assigned_to__id=assigned_to)
+
+    # Search by task title if provided
+    if search_title:
+        tasks = tasks.filter(title__icontains=search_title)
+
+    # Priority mapping for sorting
+    priority_mapping = {'L': 1, 'M': 2, 'H': 3}
+
+    # Custom sort by priority if provided
+    if sort_priority:
+        reverse = sort_priority.lower() == 'desc'
+        tasks = sorted(tasks, key=lambda task: priority_mapping[task.priority], reverse=reverse)
 
     tasks_data = [
         {
@@ -84,7 +105,7 @@ def get_tasks_by_status(request, status):
     return JsonResponse({'tasks': tasks_data})
 
 def task_list_view(request):
-    return render(request, 'tasks/task_list.html')
+    return render(request, 'dashboard.html')
 
 def get_users(request):
     users = User.objects.all()

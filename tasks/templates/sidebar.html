@@ -1,0 +1,16 @@
+<aside class="bg-white w-64 min-h-screen p-4 shadow-md">
+    {% load static %}
+        <img src="{% static 'images/logo.png' %}" alt="Tasky Logo" class="h-8" />
+    <nav>
+        <ul>
+            <li class="mb-4"><a href="{% url 'home' %}" class="text-blue-500">Dashboard</a></li>
+            <li class="mb-4"><a href="#">Tasks</a></li>
+            <li class="mb-4"><a href="#">Calendar</a></li>
+            <li class="mb-4"><a href="#">Members</a></li>
+        </ul>
+    </nav>
+    <div class="mt-8">
+        <button class="bg-blue-500 text-white p-2 rounded">Upgrade to Pro</button>
+    </div>
+</aside>
+

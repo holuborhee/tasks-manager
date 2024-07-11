@@ -1,0 +1,293 @@
+<!-- templates/home.html -->
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<header class="bg-white shadow-md p-4 flex justify-between items-center">
+    <div class="flex items-center">
+        <input type="text" placeholder="Search tasks" id="searchBox" class="ml-4 p-2 border rounded">
+    </div>
+    <div class="flex items-center">
+        <!-- Add user profile icon and notifications here -->
+    </div>
+</header>
+<main class="p-4">
+    <div class="flex justify-between">
+        <div class="grid grid-cols-3 gap-4">
+            <button class="text-gray-500"><i class="fa-solid fa-layer-group"></i> Preview</button>
+            <button class="text-gray-500" id="sortByButton"><i id="sortI" class="fa-solid fa-arrow-down-wide-short"></i> Sort</button>
+            <select id="filterByUser">
+                <option value=""><i class="fa-solid fa-sliders"></i> All Users</option>
+            </select>
+            
+        </div>
+
+        <button class="btn btn-primary" data-target="#taskModal" onclick="openModal('add')">
+            <i class="fa-solid fa-plus"></i>
+            Add Task
+        </button>
+
+    </div>
+    <div class="grid grid-cols-3 gap-4">
+        <div>
+            <h2 class="text-xl mb-4">In Progress</h2>
+            <div id="in-progress-tasks" class="space-y-4">
+            </div>
+        </div>
+        <div>
+            <h2 class="text-xl mb-4">Completed Task</h2>
+            <div id="completed-tasks" class="space-y-4">
+            </div>
+        </div>
+        <div>
+            <h2 class="text-xl mb-4">Over-Due</h2>
+            <div id="overdue-tasks" class="space-y-4">
+            </div>
+        </div>
+    </div>
+
+<!-- Modal -->
+<div class="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center hidden" id="taskModal">
+    <div class="bg-white rounded shadow-md w-1/2">
+        <div class="px-4 py-2 border-b border-gray-200">
+            <h5 class="text-lg font-bold" id="taskModalLabel">Task</h5>
+            <button class="text-gray-600 hover:text-gray-900 transition duration-300 ease-in-out focus:outline-none" id="modalDismissBtn" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="px-4 py-4">
+            <form id="taskForm">
+                <input type="hidden" id="taskId" name="taskId">
+                <div class="mb-4">
+                    <label for="title" class="block text-gray-700 text-sm font-bold mb-2">Title</label>
+                    <input type="text" id="title" name="title" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+                <div class="mb-4">
+                    <label for="description" class="block text-gray-700 text-sm font-bold mb-2">Description</label>
+                    <textarea id="description" name="description" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+                </div>
+                <div class="mb-4">
+                    <label for="status" class="block text-gray-700 text-sm font-bold mb-2">Status</label>
+                    <select id="status" name="status" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        <option value="IP">In Progress</option>
+                        <option value="CO">Completed</option>
+                        <option value="OV">Overdue</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="priority" class="block text-gray-700 text-sm font-bold mb-2">Priority</label>
+                    <select id="priority" name="priority" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        <option value="L">Low</option>
+                        <option value="M">Medium</option>
+                        <option value="H">High</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="due_date" class="block text-gray-700 text-sm font-bold mb-2">Due Date</label>
+                    <input type="date" id="due_date" name="due_date" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+                <div class="mb-4">
+                    <label for="category" class="block text-gray-700 text-sm font-bold mb-2">Category</label>
+                    <input type="text" id="category" name="category" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+                <div class="mb-4">
+                    <label for="assigned_to" class="block text-gray-700 text-sm font-bold mb-2">Assigned To</label>
+                    <select id="assigned_to" name="assigned_to" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></select>
+                </div>
+                <button type="submit" class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded">Save Task</button>
+            </form>
+        </div>
+    </div>
+</div>
+</main>
+<script>
+let users = [];
+let isDescending = true;
+
+
+function fetchAllTasks() {
+    const searchTerm = $('#searchBox').val().trim();
+    const filterBy = $('#filterByUser').val().trim();
+    const sortPriority = isDescending ? 'DESC' : 'ASC'
+    fetchTasksByStatus('in-progress', filterBy, sortPriority, searchTerm);
+    fetchTasksByStatus('completed', filterBy, sortPriority, searchTerm);
+    fetchTasksByStatus('overdue', filterBy, sortPriority, searchTerm);
+}
+$(document).ready(async function() {
+
+await fetchUsers();
+fetchAllTasks()
+
+$('#searchBox').keyup($.debounce(250, function(e) {
+    fetchAllTasks()
+}))
+
+$('#filterByUser').change(function(e) {
+    fetchAllTasks()
+})
+
+$('#searchBox').keyup($.debounce(250, function(e) {
+    fetchAllTasks()
+}))
+
+$('#sortByButton').click(function(e) {
+    isDescending = !isDescending;
+    $('#sortI').toggleClass('fa-arrow-down-wide-short', isDescending);
+    $('#sortI').toggleClass('fa-arrow-up-short-wide', !isDescending);
+    fetchAllTasks()
+})
+
+$('#taskForm').submit(function(event) {
+    event.preventDefault();
+    const action = $('#taskId').val() ? 'edit' : 'add';
+    const taskId = $('#taskId').val();
+    const url = action === 'add' ? '/api/tasks/' : `/api/tasks/${taskId}/update/`;
+    const method = action === 'add' ? 'POST' : 'PUT';
+
+    $.ajax({
+        url: url,
+        method: method,
+        contentType: 'application/json',
+        data: JSON.stringify({
+            title: $('#title').val(),
+            description: $('#description').val(),
+            status: $('#status').val(),
+            priority: $('#priority').val(),
+            due_date: $('#due_date').val(),
+            category: $('#category').val(),
+            assigned_to: $('#assigned_to').val()
+        }),
+        success: function() {
+            fetchAllTasks()
+            $('#taskModal').addClass('hidden');
+            
+        }
+    });
+});
+
+$('#modalDismissBtn').click(function(event) {
+    $('#taskModal').addClass('hidden');
+})
+});
+
+function fetchTasksByStatus(status, assignedTo = null, sortPriority = null, searchTitle = null) {
+    let url = `/api/tasks/status/${status}/?`;
+
+    if (assignedTo) {
+        url += `assigned_to=${assignedTo}&`;
+    }
+    if (sortPriority) {
+        url += `sort_priority=${sortPriority}&`;
+    }
+    if (searchTitle) {
+        url += `search_title=${searchTitle}&`;
+    }
+
+    $.ajax({
+        url: url,
+        method: 'GET',
+        success: function(response) {
+            const tasks = response.tasks;
+            renderTasks(`${status}-tasks`, tasks);
+        }
+    });
+}
+
+
+function renderTasks(elementId, tasks) {
+    const PRIORITY = {L: 'LOW', M: 'MEDIUM', H: 'HIGH'};
+
+    let tasksHtml = '';
+    tasks.forEach(function(task) {
+        tasksHtml += `
+        <div class="task-card bg-white p-4 rounded shadow-md mb-4" data-task-id="${task.id}">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-sm text-gray-500">${PRIORITY[task.priority]}</span>
+                <span class="text-sm text-gray-500">${convertToDateString(task.due_date, '/')}</span>
+                <span class="text-sm text-gray-500">${task.category}</span>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">${task.title}</h3>
+            <p class="text-gray-700 mb-4">${task.description}</p>
+            <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-500">${users.find(user => user.id === task.assigned_to)?.username}</span>
+                <div class="flex space-x-2">
+                    <button class="text-gray-500"><i class="far fa-eye"></i></button>
+                    <button class="text-gray-500 edit-task" data-task-id="${task.id}" onclick="openModal('edit', ${task.id})"><i class="far fa-edit"></i></button>
+                    <button class="text-gray-500 delete-task" data-task-id="${task.id}" onclick="deleteTask(${task.id})"><i class="far fa-trash-alt"></i></button>
+                </div>
+            </div>
+        </div>
+        `;
+    });
+    $(`#${elementId}`).html(tasksHtml);
+}
+
+function fetchUsers() {
+$.ajax({
+    url: '/api/users/',
+    method: 'GET',
+    success: function(response) {
+        users = response.users;
+        $('#assigned_to').empty();
+        users.forEach(user => {
+            $('#assigned_to').append(`<option value="${user.id}">${user.username}</option>`);
+            $('#filterByUser').append(`<option value="${user.id}">${user.username}</option>`);
+        });
+    }
+});
+}
+
+function openModal(action, taskId = null) {
+if (action === 'edit') {
+    $.ajax({
+        url: `/api/tasks/${taskId}/`,
+        method: 'GET',
+        success: function(response) {
+            $('#taskId').val(taskId);
+            $('#title').val(response.title);
+            $('#description').val(response.description);
+            $('#status').val(response.status);
+            $('#priority').val(response.priority);
+            $('#due_date').val(convertToDateString(response.due_date));
+            $('#category').val(response.category);
+            $('#assigned_to').val(response.assigned_to);
+            $('#taskModalLabel').text('Edit Task');
+            $('#taskModal').removeClass('hidden');
+        }
+    });
+} else {
+    $('#taskId').val('');
+    $('#taskForm')[0].reset();
+    $('#taskModalLabel').text('Add Task');
+    $('#taskModal').removeClass('hidden');
+}
+}
+
+function deleteTask(taskId) {
+if (confirm('Are you sure you want to delete this task?')) {
+    $.ajax({
+        url: `/api/tasks/${taskId}/delete/`,
+        method: 'DELETE',
+        success: function() {
+            fetchAllTasks()
+        },
+        error: function(error) {
+            console.error('Error deleting task:', error);
+            alert('An error occurred while trying to delete the task. Please try again.');
+        }
+    });
+}
+}
+
+function convertToDateString(isoString, delimeter='-') {
+const date = new Date(isoString);
+const year = date.getFullYear();
+const month = String(date.getMonth() + 1).padStart(2, '0');
+const day = String(date.getDate()).padStart(2, '0');
+return `${year}${delimeter}${month}${delimeter}${day}`;
+}
+
+
+</script>
+{% endblock %}
