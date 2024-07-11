@@ -9,7 +9,7 @@ Create and Manage your tasks.
 * [x] Fetch and Display with Jquery and Tailwind on the Client Side
 * [x] Search by task title
 * [x] Filter by Assigned User
-* [x] Sort my priority
+* [x] Sort by priority
 * [ ] drag-and-drop functionality to change the status of tasks
 * [ ] User Authentication and Authorization
 * [ ] Validation on Client Side and Server side
