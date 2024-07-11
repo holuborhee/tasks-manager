@@ -2,6 +2,18 @@
 
 Create and Manage your tasks.
 
+## Features
+
+* [x] CRUD for tasks on the backend
+* [x] Add, Edit, and Delete using AJAX on the frontend
+* [x] Fetch and Display with Jquery and Tailwind on the Client Side
+* [x] Search by task title
+* [x] Filter by Assigned User
+* [x] Sort my priority
+* [ ] drag-and-drop functionality to change the status of tasks
+* [ ] User Authentication and Authorization
+* [ ] Validation on Client Side and Server side
+
 ## Prerequisites
 
 Before you can run this project, you need to make sure you have the following software installed on your machine:
@@ -41,13 +53,3 @@ Follow the prompts to enter your desired username, email address, and password.
 9. Open your web browser and go to `http://127.0.0.1:8000/` to view the project.
 
 10. To create more users, you can visit `http://127.0.0.1:8000/admin` and login with the username and password you created on **Step 7**
-
-## Features
-
-### Checklist
-
-* [x] CRUD for tasks
-* [x] Fetch and Display with Jquery and Tailwind on Client Side
-* [ ] drag-and-drop functionality to change the status of tasks
-* [ ] User Authentication and Authorization
-* [ ] Validation on Client Side and Server side
